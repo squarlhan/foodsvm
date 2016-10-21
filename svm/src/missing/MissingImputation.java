@@ -1,4 +1,4 @@
-package knn;
+package missing;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -53,8 +53,8 @@ class ArrayComptr implements Comparator<Integer>
 
 public class MissingImputation implements Serializable
 {
-	int column_num =14;  //14 , 50
-	int row_num = 242;  //242 . 758
+	int column_num;  //14 , 50
+	int row_num;  //242 . 758
 	int k;
 	int size_tr;
 	int size_tc;
@@ -80,8 +80,8 @@ public class MissingImputation implements Serializable
 	 
 	  ArrayList<Double> cellData = new ArrayList<Double> ();	
 	  double avg; 
-	  Double distance[] = new Double[row_num];
-	  Double sorted_distance[] = new Double[row_num];
+	  Double distance[];
+	  Double sorted_distance[];
 	  int topk[] = new int[k];
 	
 	  boolean has_missing()
@@ -142,11 +142,15 @@ public class MissingImputation implements Serializable
 		try {
 			InputStreamReader ir = new InputStreamReader(new FileInputStream(addr));
 			BufferedReader reader = new BufferedReader(ir);
+			int n = 0;
+			int m = 0;
 			for (String line = reader.readLine(); line != null; line = reader.readLine()) {
 				String[] lines = line.split("\t");
 				RowData rowData = new RowData();
 				RowData row2Data = new RowData();
 
+				n = n==0?lines.length:n;
+				m++;
 				for(String s : lines){
 					rowData.cellData.add(Double.parseDouble(s));
 		        	row2Data.cellData.add(Double.parseDouble(s));
@@ -159,6 +163,9 @@ public class MissingImputation implements Serializable
 			}
 			ir.close();
 			reader.close();
+			this.column_num = n;
+			this.row_num = m;
+
 		} catch (NumberFormatException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -248,7 +255,8 @@ public class MissingImputation implements Serializable
 		for(RowData ob1:data_or) //OrData
 		{  
 	       int idx = data_or.indexOf(ob1);
-			
+			ob1.distance = new Double[row_num];
+			ob1.sorted_distance = new Double[row_num];
 			for(RowData ob2:data_my) //MyData
 			{  
 				int index = data_my.indexOf(ob2);							
