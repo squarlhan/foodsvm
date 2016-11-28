@@ -40,13 +40,15 @@ public class WholeSVMGA {
 	public static void main(String[] args) throws IOException {
 		SVModel svm = new SVModel();
 		long start = System.currentTimeMillis();
-		double[][] trainset = svm.readdata("C:/Users/install/Desktop/hxs/TCM/hnc/all.txt");
+		double[][] trainset = svm.readdata("./matrix_data/allResult_0.25_6.txt");
+//		double[][] trainset = svm.readdata("C:/Users/install/Desktop/hxs/TCM/hnc/nd/missing/matrix_data/allResult_0.25_6.txt");
+		
 		double[][] strainset = svm.scale(0, 1, trainset);
 //		trainset = svm.scale(-1, 1, pl.train_xy);
 //		testset = svm.scale(-1, 1, pl.test_xy);
 
 		int feasure_num = strainset[0].length-1;
-		int numEvolutions = 2000;
+		int numEvolutions = 200;
 		Configuration gaConf = new DefaultConfiguration();
 		gaConf.setPreservFittestIndividual(true);
 		gaConf.setKeepPopulationSizeConstant(false);
@@ -72,7 +74,7 @@ public class WholeSVMGA {
 //		    sampleGenes[1] = new IntegerGene(gaConf, 1, 200); // c
 		    IChromosome sampleChromosome = new Chromosome(gaConf, sampleGenes);
 			gaConf.setSampleChromosome(sampleChromosome);
-			gaConf.setPopulationSize(500);
+			gaConf.setPopulationSize(50);
 			gaConf.setFitnessFunction(new WholeSVMFitnessFunction(strainset));
 			genotype = Genotype.randomInitialGenotype(gaConf);
 		} catch (InvalidConfigurationException e) {

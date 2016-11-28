@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import knn.KNN;
 import libsvm.svm;
@@ -335,10 +336,10 @@ public class SVModel {
 				}
 			}
 
-//			double[][] KNNTrain = Train;
-//			double[][] KNNTest = Test;
-			double[][] KNNTrain = this.addknnfeature(Train, Train);
-			double[][] KNNTest = this.addknnfeature(Train, Test);
+			double[][] KNNTrain = Train;
+			double[][] KNNTest = Test;
+//			double[][] KNNTrain = this.addknnfeature(Train, Train);
+//			double[][] KNNTest = this.addknnfeature(Train, Test);
 			n = KNNTest[0].length;
 			trian(KNNTrain, gamma, c);
 			for (int k = 0; k <= KNNTest.length - 1; k++) {
@@ -346,7 +347,9 @@ public class SVModel {
 			}
 
 			// svm.scores = null;
-			ave_acc += predict(KNNTest, false);
+			double p = predict(KNNTest, false);
+//			System.out.print(i+" Cross Validation Accuracy = "+100.0*p+"%\n");
+			ave_acc += p;
 		}
 		double res = ave_acc / num_fold;
 //		 System.out.print("Cross Validation Accuracy = "+100.0*res+"%\n");
@@ -399,10 +402,10 @@ public class SVModel {
 					}
 				}
 			}
-//			double[][] KNNTrain = Train;
-//			double[][] KNNTest = Test;
-			double[][] KNNTrain = this.addknnfeature(Train, Train);
-			double[][] KNNTest = this.addknnfeature(Train, Test);
+			double[][] KNNTrain = Train;
+			double[][] KNNTest = Test;
+//			double[][] KNNTrain = this.addknnfeature(Train, Train);
+//			double[][] KNNTest = this.addknnfeature(Train, Test);
 			n = KNNTest[0].length;
 			svm_problem subprob = getdata(KNNTrain);
 			svm_parameter param = initsvm(gamma, c);
@@ -427,9 +430,9 @@ public class SVModel {
 			sub2prob.l = sl;
 			sub2prob.x = new svm_node[sl][];
 			sub2prob.y = new double[sl];
-			for (i = 0; i <= sl - 1; i++) {
-				sub2prob.x[i] = sbx.get(i);
-				sub2prob.y[i] = sby.get(i);
+			for (int ii = 0; ii <= sl - 1; ii++) {
+				sub2prob.x[ii] = sbx.get(ii);
+				sub2prob.y[ii] = sby.get(ii);
 			}
 			svm_model submodel = svm.svm_train(subprob, param);
 			svm_model submodel2 = svm.svm_train(sub2prob, param);
@@ -449,18 +452,19 @@ public class SVModel {
 					target[j] = r;
 				}
 			}
-			for (i = 0; i < testprob.l; i++) {
-				if (target[i] == testprob.y[i]) {
+			for (j = 0; j < testprob.l; j++) {
+				if (target[j] == testprob.y[j]) {
 					++total_correct;
 				}
-				// System.out.print("Cross Validation Accuracy =
-				// "+100.0*total_correct/prob.l+"%\n");
-				ave_acc += 1.0 * total_correct / testprob.l;
+				
 			}
+			double p = 1.0 * total_correct / testprob.l;
+			System.out.print(i+" Cross Validation Accuracy = "+100.0*p+"%\n");
+			ave_acc += p;
 
 		}
 		double res = ave_acc / num_fold;
-		// System.out.print("Cross Validation Accuracy = "+100.0*res+"%\n");
+		System.out.print("Cross Validation Accuracy = "+100.0*res+"%\n");
 		return res;
 
 	}
@@ -486,19 +490,53 @@ public class SVModel {
 		}
 		bw.close();
 	}
+	
+	
+	
+	public void dotest(String addr) throws IOException{
+		DataProcess dp = new  DataProcess();
+		Map<Integer,String> map = dp.getdata();
+		String outaddr = addr+"out.txt";
+		File result = new File(outaddr);
+		BufferedWriter bw = new BufferedWriter(new FileWriter(result));
+		int mn = map.size();
+		for(int i = 1;i<=mn;i++){
+			String name = map.get(i);
+			String fileaddr = addr+name+".txt";			
+			double[][] data = readdata(fileaddr);
+			double[][] sdata = scale(0, 1, data);
+			int m = data.length;
+			int n = data[0].length;
+			
+			double res1 = do_cross_validation(sdata, 1.0/n, 20, 10);
+//			double res2 = do_cross_validation_onebyone(sdata, 1.0/n, 20, 10);
+			
+			bw.write(name+"\t"+res1+"\t"+"\n");
+			System.out.println(name+"\t"+res1+"\t"+"\n");
+			bw.flush();
+			
+		}
+		bw.close();
+	}
 
 	public static void main(String[] args) {
 		SVModel svm = new SVModel();
-		double[][] data = svm.readdata("C:/Users/install/Desktop/hxs/TCM/hnc/all.txt");
-		double[][] sdata = svm.scale(0, 1, data);
+//		String addr = "C:/Users/install/Desktop/hxs/TCM/hnc/nd/missing/matrix_data/";
+		String addr = "./matrix_data/";
+//		double[][] data = svm.readdata("C:/Users/install/Desktop/hxs/TCM/hnc/nd/missing/allResult_0.01_5.txt");
+//		double[][] sdata = svm.scale(0, 1, data);
+		
 		try {
 			// svm.write2file(sdata,
 			// "C:/Users/install/Desktop/hxs/TCM/hnc/sall.txt");
 
 			// svm.trian(sdata, 0.05, 1);
 			// svm.trian(data, 0.05, 1);
-			svm.do_cross_validation(sdata, 0.11706042784540238, 2.069315007176546, 10);
-			svm.write2file("C:/Users/install/Desktop/hxs/TCM/hnc/scores.txt");
+//			svm.do_cross_validation_onebyone(sdata, 0.11706042784540238, 2.069315007176546, 10);
+//			svm.write2file("C:/Users/install/Desktop/hxs/TCM/hnc/nd/missing/scores.txt");
+			svm.dotest(addr);
+			
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

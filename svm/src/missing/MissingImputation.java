@@ -176,6 +176,47 @@ public class MissingImputation implements Serializable
 	//	 System.out.println("\n Number of Row ="+rows);
 	 }
 	
+	void read(String addr, int[] filterindex)
+	{
+		
+		
+		try {
+			InputStreamReader ir = new InputStreamReader(new FileInputStream(addr));
+			BufferedReader reader = new BufferedReader(ir);
+			int n = 0;
+			int m = 0;
+			for (String line = reader.readLine(); line != null; line = reader.readLine()) {
+				String[] lines = line.split("\t");
+				RowData rowData = new RowData();
+				RowData row2Data = new RowData();
+
+				n = n==0?filterindex.length:n;
+				m++;
+				for(int i : filterindex){
+					rowData.cellData.add(Double.parseDouble(lines[i]));
+		        	row2Data.cellData.add(Double.parseDouble(lines[i]));
+				}
+				
+			    data_my.add(rowData);
+			    data_or.add(row2Data);
+
+
+			}
+			ir.close();
+			reader.close();
+			this.column_num = n;
+			this.row_num = m;
+
+		} catch (NumberFormatException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
+	//	 System.out.println("\n Number of Row ="+rows);
+	 }
+	
 	void print()
 	{
 		System.out.println("Printing the data \n");
@@ -783,10 +824,16 @@ double getActualSum()
 		
 	//	for(int iter=15; iter<46;iter++)
 	//	{
+		String faddr = "C:/Users/install/Desktop/hxs/TCM/hnc/nd/fes.txt";
+		double cutoff = 0.1;
+		FileterFeature ff = new FileterFeature(faddr);
+		ff.read();
+		ff.filet(cutoff);
+		int[] res = ff.getfilteredindex();
 		MissingImputation qt  = new MissingImputation();
 		//qt.readSerObj(); //read the serialized object   //reading the ORIGINAL values into serData
 		qt.k=9;		//9 for 1st , 38 is the limit for 2nd dataset
-		qt.read(addr);
+		qt.read(addr, res);
 	
 		//qt.copyRead(); //copy orData to a testData
 		qt.calc_Average();

@@ -7,5 +7,6 @@
 	<classpathentry kind="lib" path="lib/jackson-mapper-asl-1.9.12.jar"/>
 	<classpathentry kind="lib" path="lib/roc.jar"/>
 	<classpathentry kind="lib" path="lib/commons-math3-3.2.jar"/>
+	<classpathentry kind="lib" path="lib/commons-lang3-3.5.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

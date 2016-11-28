@@ -10,7 +10,7 @@ import java.util.List;
 public class FileterFeature {
 	
 	private List<Feature> all;
-	private List<Feature> fileted;
+	private List<Feature> filtered;
 	private String addr;
 	
 	
@@ -18,13 +18,13 @@ public class FileterFeature {
 	public FileterFeature(String addr) {
 		super();
 		all = new ArrayList<Feature>();
-		fileted = new ArrayList<Feature>();
+		filtered = new ArrayList<Feature>();
 		this.addr = addr;
 	}
 	public FileterFeature() {
 		super();
 		all = new ArrayList<Feature>();
-		fileted = new ArrayList<Feature>();
+		filtered = new ArrayList<Feature>();
 		// TODO Auto-generated constructor stub
 	}
 	public List<Feature> getAll() {
@@ -33,11 +33,11 @@ public class FileterFeature {
 	public void setAll(List<Feature> all) {
 		this.all = all;
 	}
-	public List<Feature> getFileted() {
-		return fileted;
+	public List<Feature> getFiltered() {
+		return filtered;
 	}
-	public void setFileted(List<Feature> fileted) {
-		this.fileted = fileted;
+	public void setFiltered(List<Feature> filtered) {
+		this.filtered = filtered;
 	}
 	public String getAddr() {
 		return addr;
@@ -67,6 +67,38 @@ public class FileterFeature {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public void filet(double cutoff){
+		for(Feature f : all){
+			if(f.getNull_rate()<cutoff){
+				filtered.add(f);
+			}else{
+				break;
+			}
+		}
+	}
+	
+	public int[] getfilteredindex(){
+		int s = filtered.size();
+		int[] indexes = new int[s];
+		for(int i = 0; i<= s-1; i++){
+			indexes[i] = filtered.get(i).getRank()-1;
+		}
+		return indexes;
+	}
+	
+	public static void main(String[] args){
+		String addr = "C:/Users/install/Desktop/hxs/TCM/hnc/nd/fes.txt";
+		double cutoff = 0.382;
+		FileterFeature ff = new FileterFeature(addr);
+		ff.read();
+		ff.filet(cutoff);
+		int[] res = ff.getfilteredindex();
+		for(int i: res){
+			System.out.print(i+"\t");
+		}
+		
 	}
 
 }
