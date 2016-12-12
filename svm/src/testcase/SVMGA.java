@@ -40,7 +40,7 @@ public class SVMGA {
 	public static void main(String[] args) throws IOException {
 		SVModel svm = new SVModel();
 		
-		double[][] trainset = svm.readdata("C:/Users/install/Desktop/hxs/TCM/hnc/nd/missing/matrix_data/allResult_0.25_6.txt");
+		double[][] trainset = svm.readdata("./matrix_data/allResult_0.25_6.txt");
 		double[][] strainset = svm.scale(0, 1, trainset);
 //		trainset = svm.scale(-1, 1, pl.train_xy);
 //		testset = svm.scale(-1, 1, pl.test_xy);
