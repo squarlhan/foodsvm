@@ -27,7 +27,7 @@ public class SVMFitnessFunction
 //      int c = (int) a_subject.getGene(1).getAllele();
       SVModel svm = new SVModel();
 //      fitness = svm.do_cross_validation_onebyone(trianset, g, c, 10);
-      fitness = svm.do_cross_validation(trianset, g, c, 10);
+      fitness = svm.do_cross_validation(trianset, g, c, 5);
       return fitness;
     }
 }

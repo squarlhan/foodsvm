@@ -50,7 +50,7 @@ public class WholeSVMFitnessFunction
 //      int c = (int) a_subject.getGene(1).getAllele();
       double[][] res = selectrain(a_subject);
       SVModel svm = new SVModel();
-      fitness = svm.do_cross_validation(res, g, c, 10);
+      fitness = svm.do_cross_validation(res, g, c, 5);
 //      fitness = svm.do_cross_validation_onebyone(res, g, c, 10);
       return fitness;
     }

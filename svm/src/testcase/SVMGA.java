@@ -9,6 +9,8 @@
  */
 package testcase;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import org.jgap.*;
@@ -40,12 +42,13 @@ public class SVMGA {
 	public static void main(String[] args) throws IOException {
 		SVModel svm = new SVModel();
 		
-		double[][] trainset = svm.readdata("./matrix_data/allResult_0.25_6.txt");
+//		double[][] trainset = svm.readdata("./matrix_data/allResult_0.25_6.txt");
+		double[][] trainset = svm.readdata("C:/Users/install/Desktop/hxs/TCM/hnc/nd/missing/matrix_data/allResult_0.25_6.txt");
 		double[][] strainset = svm.scale(0, 1, trainset);
 //		trainset = svm.scale(-1, 1, pl.train_xy);
 //		testset = svm.scale(-1, 1, pl.test_xy);
 
-		int numEvolutions = 200;
+		int numEvolutions = 100;
 		Configuration gaConf = new DefaultConfiguration();
 		gaConf.setPreservFittestIndividual(true);
 		gaConf.setKeepPopulationSizeConstant(false);
@@ -75,21 +78,28 @@ public class SVMGA {
 			e.printStackTrace();
 			System.exit(-2);
 		}
+		
+		BufferedWriter bw = new BufferedWriter(new FileWriter("C:/Users/install/Desktop/hxs/TCM/hnc/nd/missing/matrix_data/galogcv5.txt"));
+		
 		int progress = 0;
 		int percentEvolution = numEvolutions / 10;
 		for (int i = 0; i < numEvolutions; i++) {
 			genotype.evolve();
 			// Print progress.
 			// ---------------
-			if (percentEvolution > 0 && i % percentEvolution == 0) {
+//			if (percentEvolution > 0 && i % percentEvolution == 0) {
 				progress++;
 				IChromosome fittest = genotype.getFittestChromosome();
 				double fitness = fittest.getFitnessValue();
 				System.out.println("Currently fittest Chromosome has fitness " + fitness);
+				bw.write(fittest.getGene(0).getAllele()+
+						"\t" + fittest.getGene(1).getAllele()+
+						"\t" + fitness + "\n");
+			    bw.flush();
 				if (fitness >= maxFitness) {
 					break;
 				}
-			}
+//			}
 		}
 		// Print summary.
 		// --------------

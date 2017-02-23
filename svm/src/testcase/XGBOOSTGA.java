@@ -13,6 +13,8 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import org.dmlc.xgboost4j.DMatrix;
+import org.dmlc.xgboost4j.util.XGBoostError;
 import org.jgap.*;
 import org.jgap.impl.*;
 
@@ -23,7 +25,7 @@ import org.jgap.impl.*;
  * @author Klaus Meffert
  * @since 2.0
  */
-public class WholeSVMGA {
+public class XGBOOSTGA {
 	/** String containing the CVS revision. Read out via reflection! */
 	private static final String CVS_REVISION = "$Revision: 1.9 $";
 
@@ -37,20 +39,19 @@ public class WholeSVMGA {
 	 * @author Neil Rotstan
 	 * @author Klaus Meffert
 	 * @throws IOException 
+	 * @throws XGBoostError 
 	 * @since 2.0
 	 */
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, XGBoostError {
 		SVModel svm = new SVModel();
-		long start = System.currentTimeMillis();
-//		double[][] trainset = svm.readdata("./matrix_data/allResult_0.25_6.txt");
-		double[][] trainset = svm.readdata("C:/Users/install/Desktop/hxs/TCM/hnc/nd/missing/matrix_data/allResult_0.25_6.txt");
 		
-		double[][] strainset = svm.scale(0, 1, trainset);
+		DMatrix trainMat = new DMatrix(
+				"C:/Users/install/Desktop/hxs/TCM/hnc/nd/missing/libsvm/allResult_0.25_6.txt");
+//		double[][] strainset = svm.scale(0, 1, trainset);
 //		trainset = svm.scale(-1, 1, pl.train_xy);
 //		testset = svm.scale(-1, 1, pl.test_xy);
 
-		int feasure_num = strainset[0].length-1;
-		int numEvolutions = 100;
+		int numEvolutions = 200;
 		Configuration gaConf = new DefaultConfiguration();
 		gaConf.setPreservFittestIndividual(true);
 		gaConf.setKeepPopulationSizeConstant(false);
@@ -59,34 +60,35 @@ public class WholeSVMGA {
 		if (args.length > 0) {
 			chromeSize = Integer.parseInt(args[0]);
 		} else {
-			chromeSize = feasure_num+2;
+			chromeSize = 6;
 		}
-		double maxFitness = 1;
-		if (chromeSize > feasure_num+2) {
-			System.err.println("This example does not handle " + "Chromosomes greater than 4 bits in length.");
+		double maxFitness = 0.98;
+		if (chromeSize > 6) {
+			System.err.println("This example does not handle " + "Chromosomes greater than 6 bits in length.");
 			System.exit(-1);
 		}
 		try {
-			Gene[] sampleGenes = new Gene[chromeSize];
-		    sampleGenes[chromeSize-2] = new DoubleGene(gaConf, 0, 1); // g
-		    sampleGenes[chromeSize-1] = new DoubleGene(gaConf, 0, 200); // c
-		    for(int i = 0;i<=feasure_num-1;i++){
-		    	sampleGenes[i] = new BooleanGene(gaConf);
-		    }
+			Gene[] sampleGenes = new Gene[6];
+		    sampleGenes[0] = new DoubleGene(gaConf, 0.1, 1); // eta
+		    sampleGenes[1] = new DoubleGene(gaConf, 0, 50); // gamma
+		    sampleGenes[2] = new IntegerGene(gaConf, 3, 6); // max_depth
+		    sampleGenes[3] = new DoubleGene(gaConf, 1, 50); // min_child_weight
+		    sampleGenes[4] = new DoubleGene(gaConf, 0.2, 1); // subsample
+		    sampleGenes[5] = new DoubleGene(gaConf, 0.6, 1); // colsample_bytree
 //		    sampleGenes[1] = new IntegerGene(gaConf, 1, 200); // c
 		    IChromosome sampleChromosome = new Chromosome(gaConf, sampleGenes);
 			gaConf.setSampleChromosome(sampleChromosome);
 			gaConf.setPopulationSize(50);
-			gaConf.setFitnessFunction(new WholeSVMFitnessFunction(strainset));
+			gaConf.setFitnessFunction(new XGBOOSTFitnessFunction(trainMat));
 			genotype = Genotype.randomInitialGenotype(gaConf);
 		} catch (InvalidConfigurationException e) {
 			e.printStackTrace();
 			System.exit(-2);
 		}
+		
+		BufferedWriter bw = new BufferedWriter(new FileWriter("C:/Users/install/Desktop/hxs/TCM/hnc/nd/missing/libsvm/galogcv2.txt"));
+		
 		int progress = 0;
-		
-		BufferedWriter bw = new BufferedWriter(new FileWriter("C:/Users/install/Desktop/hxs/TCM/hnc/nd/missing/matrix_data/galogcvall5.txt"));
-		
 		int percentEvolution = numEvolutions / 10;
 		for (int i = 0; i < numEvolutions; i++) {
 			genotype.evolve();
@@ -96,29 +98,31 @@ public class WholeSVMGA {
 				progress++;
 				IChromosome fittest = genotype.getFittestChromosome();
 				double fitness = fittest.getFitnessValue();
-				System.out.println("Currently fittest Chromosome has fitness " + fitness);
-				for(int c = 0; c<= chromeSize-1;c++){
-					bw.write(fittest.getGene(c).getAllele()+"\t");
-				}
-				bw.write("\n");
+				System.out.println("Generation "+i+" has fitness " + fitness);
+				bw.write(fittest.getGene(0).getAllele()+
+				"\t" + fittest.getGene(1).getAllele()+
+				"\t" + fittest.getGene(2).getAllele()+
+				"\t" + fittest.getGene(3).getAllele()+
+				"\t" + fittest.getGene(4).getAllele()+
+				"\t" + fittest.getGene(5).getAllele()+
+				"\t" + fitness + "\n");
 				bw.flush();
 				if (fitness >= maxFitness) {
 					break;
 				}
 //			}
 		}
+		
+		bw.close();
 		// Print summary.
 		// --------------
 		IChromosome fittest = genotype.getFittestChromosome();
-		System.out.println("Onebyone Fittest Chromosome has fitness " + fittest.getFitnessValue() +
-				"in g="+ fittest.getGene(fittest.size()-2).getAllele()+"and c=" + fittest.getGene(fittest.size()-1).getAllele());
-		
-		for(int i = 0; i<=fittest.size()-3;i++){
-	   		 if((Boolean)fittest.getGene(i).getAllele()){
-	   			System.out.print(i+"\t");
-	   		 }
-		}
-		long stop = System.currentTimeMillis();
-		System.out.println("Runing Time: "+(stop-start)/1000+"s.");
+		System.out.println("Fittest Chromosome has fitness " + fittest.getFitnessValue() +
+				"in eta="+ fittest.getGene(0).getAllele()+
+				"and gamma=" + fittest.getGene(1).getAllele()+
+				"and max_depth=" + fittest.getGene(2).getAllele()+
+				"and min_child_weight=" + fittest.getGene(3).getAllele()+
+				"and subsample=" + fittest.getGene(4).getAllele()+
+				"and colsample_bytree=" + fittest.getGene(5).getAllele());
 	}
 }

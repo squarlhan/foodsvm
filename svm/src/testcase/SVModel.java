@@ -208,6 +208,8 @@ public class SVModel {
 				String[] lines = line.trim().split("\t");
 				datalist.add(lines);
 			}
+			ir.close();
+			reader.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
