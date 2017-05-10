@@ -43,12 +43,13 @@ public class SVMGA {
 		SVModel svm = new SVModel();
 		
 //		double[][] trainset = svm.readdata("./matrix_data/allResult_0.25_6.txt");
-		double[][] trainset = svm.readdata("C:/Users/install/Desktop/hxs/TCM/hnc/nd/missing/matrix_data/allResult_0.25_6.txt");
+//		double[][] trainset = svm.readdata("C:/Users/install/Desktop/hxs/TCM/hnc/nd/missing/matrix_data/allResult_0.25_6.txt");
+		double[][] trainset = svm.readdata("d:/hxs/TCM/hnc/nd/missing/matrix_data/svm182.txt");
 		double[][] strainset = svm.scale(0, 1, trainset);
 //		trainset = svm.scale(-1, 1, pl.train_xy);
 //		testset = svm.scale(-1, 1, pl.test_xy);
 
-		int numEvolutions = 100;
+		int numEvolutions = 1000;
 		Configuration gaConf = new DefaultConfiguration();
 		gaConf.setPreservFittestIndividual(true);
 		gaConf.setKeepPopulationSizeConstant(false);
@@ -79,7 +80,7 @@ public class SVMGA {
 			System.exit(-2);
 		}
 		
-		BufferedWriter bw = new BufferedWriter(new FileWriter("C:/Users/install/Desktop/hxs/TCM/hnc/nd/missing/matrix_data/galogcv5.txt"));
+		BufferedWriter bw = new BufferedWriter(new FileWriter("d:/hxs/TCM/hnc/nd/missing/matrix_data/svm182galogcv5.txt"));
 		
 		int progress = 0;
 		int percentEvolution = numEvolutions / 10;

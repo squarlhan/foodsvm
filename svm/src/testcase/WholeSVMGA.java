@@ -43,14 +43,15 @@ public class WholeSVMGA {
 		SVModel svm = new SVModel();
 		long start = System.currentTimeMillis();
 //		double[][] trainset = svm.readdata("./matrix_data/allResult_0.25_6.txt");
-		double[][] trainset = svm.readdata("C:/Users/install/Desktop/hxs/TCM/hnc/nd/missing/matrix_data/allResult_0.25_6.txt");
-		
-		double[][] strainset = svm.scale(0, 1, trainset);
+//		double[][] trainset = svm.readdata("C:/Users/install/Desktop/hxs/TCM/hnc/nd/missing/matrix_data/allResult_0.25_6.txt");
+//		
+//		double[][] strainset = svm.scale(0, 1, trainset);
+		double[][] strainset = svm.readdata("C:/Users/squarlhan/Downloads/data2han.txt");
 //		trainset = svm.scale(-1, 1, pl.train_xy);
 //		testset = svm.scale(-1, 1, pl.test_xy);
 
 		int feasure_num = strainset[0].length-1;
-		int numEvolutions = 100;
+		int numEvolutions = 1000;
 		Configuration gaConf = new DefaultConfiguration();
 		gaConf.setPreservFittestIndividual(true);
 		gaConf.setKeepPopulationSizeConstant(false);
@@ -69,7 +70,7 @@ public class WholeSVMGA {
 		try {
 			Gene[] sampleGenes = new Gene[chromeSize];
 		    sampleGenes[chromeSize-2] = new DoubleGene(gaConf, 0, 1); // g
-		    sampleGenes[chromeSize-1] = new DoubleGene(gaConf, 0, 200); // c
+		    sampleGenes[chromeSize-1] = new DoubleGene(gaConf, 0, 100); // c
 		    for(int i = 0;i<=feasure_num-1;i++){
 		    	sampleGenes[i] = new BooleanGene(gaConf);
 		    }
@@ -85,7 +86,7 @@ public class WholeSVMGA {
 		}
 		int progress = 0;
 		
-		BufferedWriter bw = new BufferedWriter(new FileWriter("C:/Users/install/Desktop/hxs/TCM/hnc/nd/missing/matrix_data/galogcvall5.txt"));
+		BufferedWriter bw = new BufferedWriter(new FileWriter("C:/Users/squarlhan/Downloads/data2hanlog.txt"));
 		
 		int percentEvolution = numEvolutions / 10;
 		for (int i = 0; i < numEvolutions; i++) {
