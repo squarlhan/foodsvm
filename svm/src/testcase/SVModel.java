@@ -99,6 +99,28 @@ public class SVModel {
 		return (double) count / h;
 
 	}
+	
+	public double predict(double[][] data, boolean istrain, BufferedWriter bw)  {
+		int h = data.length;
+		int lenth = data[0].length;
+		int count = 0;
+		double[] ys = new double[h];
+		for (int i = 0; i <= h - 1; i++) {
+			ys[i] = predict(data[i], istrain);
+			count = ys[i] == data[i][lenth - 1] ? count + 1 : count;
+			try {
+				bw.write(ys[i]+"\t");
+				bw.write(data[i][lenth - 1]+"\n");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		// System.out.println(count+" / "+h+" = "+(double)count/h);
+		return (double) count / h;
+
+	}
 
 	public double trian(double[][] results, double gamma, double c) {
 		svm_problem prob_train = getdata(results);
@@ -313,6 +335,52 @@ public class SVModel {
 	
 
 	public List<Double> labels = null;
+	
+	public double do_cross_validation_one_feature(double[][] all, double gamma, double c, int num_fold, BufferedWriter innerbw) {
+
+		if (labels == null)
+			labels = new ArrayList();
+		double ave_acc = 0.0;
+
+		double[][][] all_set = trans2folder(all, num_fold);
+		int m = all.length;
+		int n = all[0].length;
+		for (int i = 0; i <= num_fold - 1; i++) {
+			double[][] Test = all_set[i];
+			int testl = Test.length;
+			double[][] Train = new double[m - testl][n];
+			int train_index = 0;
+			for (int j = 0; j <= num_fold - 1; j++) {
+				if (i != j) {
+					int subl = all_set[j].length;
+					for (int k = 0; k <= subl - 1; k++) {
+						Train[train_index] = all_set[j][k];
+						train_index++;
+					}
+				}
+			}
+
+			double[][] KNNTrain = Train;
+			double[][] KNNTest = Test;
+//			double[][] KNNTrain = this.addknnfeature(Train, Train);
+//			double[][] KNNTest = this.addknnfeature(Train, Test);
+			n = KNNTest[0].length;
+			trian(KNNTrain, gamma, c);
+			for (int k = 0; k <= KNNTest.length - 1; k++) {
+				labels.add(KNNTest[k][n - 1]);
+			}
+
+			// svm.scores = null;
+			double p = predict(KNNTest, false, innerbw);
+//			System.out.print(i+" Cross Validation Accuracy = "+100.0*p+"%\n");
+			ave_acc += p;
+		}
+		double res = ave_acc / num_fold;
+//		 System.out.print("Cross Validation Accuracy = "+100.0*res+"%\n");
+		// svm.scores = null;
+		// svm.pre_ys = null;
+		return res;
+	}
 
 	public double do_cross_validation(double[][] all, double gamma, double c, int num_fold) {
 
@@ -520,11 +588,56 @@ public class SVModel {
 		}
 		bw.close();
 	}
+	
+	public void doonefeaturetest(String inaddr, String addr) throws IOException{
+		DataProcess dp = new  DataProcess();
+		Map<Integer,String> map = dp.getdata();
+		String outaddr = addr+"/sout.txt";
+		File result = new File(outaddr);
+		BufferedWriter bw = new BufferedWriter(new FileWriter(result));
+				
+		double[][] data = readdata(inaddr);
+		double[][] sdata = scale(0, 1, data);
+		int m = data.length;
+		int n = data[0].length;
+		
+//		for(int i = 0; i<=m-1; i++){
+//			for(int j = 0; j<=n-1;j++){
+//				bw.write(sdata[i][j]+"\t");
+//
+//				}
+//			bw.write("\n");
+//			bw.flush();
+//			
+//			}
+		
+		for(int i = 0; i<=n-2; i++){
+			double[][] tempdata = new double[m][2];
+			for(int j = 0; j<=m-1;j++){
+				tempdata[j][0] = sdata[j][i];
+				tempdata[j][1] = sdata[j][n-1];
+				
+			}
+			String inneroutaddr = addr+i+".txt";
+			File innerresult = new File(inneroutaddr);
+			BufferedWriter innerbw = new BufferedWriter(new FileWriter(innerresult));
+			double res1 = do_cross_validation_one_feature(tempdata, 0.1, 20, 10, innerbw);
+			innerbw.close();
+			bw.write(i+"\t"+res1+"\t"+"\n");
+			System.out.println(i+"\t"+res1);
+			bw.flush();
+		}
+		
+			
+		
+		bw.close();
+	}
 
 	public static void main(String[] args) {
 		SVModel svm = new SVModel();
-//		String addr = "C:/Users/install/Desktop/hxs/TCM/hnc/nd/missing/matrix_data/";
-		String addr = "./matrix_data/";
+		String addr = "G:/hxs/TCM/hnc/nd/missing/matrix_data/all_one/";
+		String inaddr = "G:/hxs/TCM/hnc/nd/missing/matrix_data/all_one/allResult_0.25_6.txt";
+//		String addr = "./matrix_data/";
 //		double[][] data = svm.readdata("C:/Users/install/Desktop/hxs/TCM/hnc/nd/missing/allResult_0.01_5.txt");
 //		double[][] sdata = svm.scale(0, 1, data);
 		
@@ -536,7 +649,8 @@ public class SVModel {
 			// svm.trian(data, 0.05, 1);
 //			svm.do_cross_validation_onebyone(sdata, 0.11706042784540238, 2.069315007176546, 10);
 //			svm.write2file("C:/Users/install/Desktop/hxs/TCM/hnc/nd/missing/scores.txt");
-			svm.dotest(addr);
+//			svm.dotest(addr);
+			svm.doonefeaturetest(inaddr, addr);
 			
 			
 		} catch (IOException e) {
