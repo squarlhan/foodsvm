@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/!svn/ver/284/trunk/AffinityPropagationConsole/src/matrix
+END
+DoubleMatrix1D.java
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/!svn/ver/263/trunk/AffinityPropagationConsole/src/matrix/DoubleMatrix1D.java
+END
+DoubleMatrix2D.java
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/!svn/ver/263/trunk/AffinityPropagationConsole/src/matrix/DoubleMatrix2D.java
+END
+DoubleMatrix1DInterface.java
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/!svn/ver/263/trunk/AffinityPropagationConsole/src/matrix/DoubleMatrix1DInterface.java
+END
+IntegerMatrix1D.java
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/!svn/ver/263/trunk/AffinityPropagationConsole/src/matrix/IntegerMatrix1D.java
+END
+Matrix1D.java
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/!svn/ver/284/trunk/AffinityPropagationConsole/src/matrix/Matrix1D.java
+END
+Matrix2D.java
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/!svn/ver/263/trunk/AffinityPropagationConsole/src/matrix/Matrix2D.java
+END
+Matrix1DInterface.java
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/!svn/ver/284/trunk/AffinityPropagationConsole/src/matrix/Matrix1DInterface.java
+END
+Matrix2DInterface.java
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/!svn/ver/263/trunk/AffinityPropagationConsole/src/matrix/Matrix2DInterface.java
+END

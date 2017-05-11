@@ -589,10 +589,10 @@ public class SVModel {
 		bw.close();
 	}
 	
-	public void doonefeaturetest(String inaddr, String addr) throws IOException{
+	public void doonefeaturetest(String inaddr, String addr, String prefix) throws IOException{
 		DataProcess dp = new  DataProcess();
 		Map<Integer,String> map = dp.getdata();
-		String outaddr = addr+"/sout.txt";
+		String outaddr = addr+"/"+prefix+"_out.txt";
 		File result = new File(outaddr);
 		BufferedWriter bw = new BufferedWriter(new FileWriter(result));
 				
@@ -618,7 +618,7 @@ public class SVModel {
 				tempdata[j][1] = sdata[j][n-1];
 				
 			}
-			String inneroutaddr = addr+i+".txt";
+			String inneroutaddr = addr+"/"+prefix+"_"+i+".txt";
 			File innerresult = new File(inneroutaddr);
 			BufferedWriter innerbw = new BufferedWriter(new FileWriter(innerresult));
 			double res1 = do_cross_validation_one_feature(tempdata, 0.1, 20, 10, innerbw);
@@ -635,8 +635,9 @@ public class SVModel {
 
 	public static void main(String[] args) {
 		SVModel svm = new SVModel();
-		String addr = "G:/hxs/TCM/hnc/nd/missing/matrix_data/all_one/";
-		String inaddr = "G:/hxs/TCM/hnc/nd/missing/matrix_data/all_one/allResult_0.25_6.txt";
+		String prefix = "nc";
+		String addr = "D:/hxs/TCM/hnc/nd/missing/matrix_data/one_feature/";
+		String inaddr = addr+prefix+".txt";
 //		String addr = "./matrix_data/";
 //		double[][] data = svm.readdata("C:/Users/install/Desktop/hxs/TCM/hnc/nd/missing/allResult_0.01_5.txt");
 //		double[][] sdata = svm.scale(0, 1, data);
@@ -650,7 +651,7 @@ public class SVModel {
 //			svm.do_cross_validation_onebyone(sdata, 0.11706042784540238, 2.069315007176546, 10);
 //			svm.write2file("C:/Users/install/Desktop/hxs/TCM/hnc/nd/missing/scores.txt");
 //			svm.dotest(addr);
-			svm.doonefeaturetest(inaddr, addr);
+			svm.doonefeaturetest(inaddr, addr,prefix);
 			
 			
 		} catch (IOException e) {

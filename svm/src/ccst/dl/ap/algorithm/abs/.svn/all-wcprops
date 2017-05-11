@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/!svn/ver/590/trunk/AffinityPropagationConsole/src/algorithm/abs
+END
+ClusterInteger.java
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/!svn/ver/590/trunk/AffinityPropagationConsole/src/algorithm/abs/ClusterInteger.java
+END
+Cluster.java
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/!svn/ver/590/trunk/AffinityPropagationConsole/src/algorithm/abs/Cluster.java
+END
+AffinityPropagationAlgorithm.java
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/!svn/ver/590/trunk/AffinityPropagationConsole/src/algorithm/abs/AffinityPropagationAlgorithm.java
+END
+ClusterString.java
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/!svn/ver/590/trunk/AffinityPropagationConsole/src/algorithm/abs/ClusterString.java
+END
+ConvitsVector.java
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/!svn/ver/590/trunk/AffinityPropagationConsole/src/algorithm/abs/ConvitsVector.java
+END
+AbstractClusterAlgorithm.java
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/!svn/ver/590/trunk/AffinityPropagationConsole/src/algorithm/abs/AbstractClusterAlgorithm.java
+END
