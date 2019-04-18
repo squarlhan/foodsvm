@@ -684,30 +684,30 @@ public class SVModel {
 		String prefix = "nc";
 		String[] pres = { "hc", "nc", "hn", "all" };
 		String addr = "D:/hxs/TCM/hnc/nd/missing/matrix_data/one_left/";
-		for (String pre : pres) {
-			String inaddr = addr + pre + ".txt";
-			// String addr = "./matrix_data/";
-			// double[][] data =
-			// svm.readdata("C:/Users/install/Desktop/hxs/TCM/hnc/nd/missing/allResult_0.01_5.txt");
-			// double[][] sdata = svm.scale(0, 1, data);
+//		for (String pre : pres) {
+//			String inaddr = addr + pre + ".txt";
+//			 String addr = "./matrix_data/";
+			 double[][] data =
+			 svm.readdata("D:/daqingwork/all.txt");
+			 double[][] sdata = svm.scale(0, 1, data);
 
 			try {
-				// svm.write2file(sdata,
-				// "C:/Users/install/Desktop/hxs/TCM/hnc/sall.txt");
+				 svm.write2file(sdata,
+				 "D:/daqingwork/sall.txt");
 
-				// svm.trian(sdata, 0.05, 1);
+//				 svm.trian(sdata, 0.05, 1);
 				// svm.trian(data, 0.05, 1);
-				// svm.do_cross_validation_onebyone(sdata, 0.11706042784540238,
-				// 2.069315007176546, 10);
-				// svm.write2file("C:/Users/install/Desktop/hxs/TCM/hnc/nd/missing/scores.txt");
+				 svm.do_cross_validation_onebyone(sdata, 0.11706042784540238,
+				 2.069315007176546, 10);
+				 svm.write2file("d:/daqingwork/scores.txt");
 				// svm.dotest(addr);
-				svm.doonefeaturetest(inaddr, addr, pre);
+//				svm.doonelefttest(inaddr, addr, pre);
 
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}
+//		}
 	}
 
 }
