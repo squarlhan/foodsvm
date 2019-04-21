@@ -143,8 +143,8 @@ public class Trans2Point {
 		String outaddr = "D:/hxs/TCM/hnc/nd/missing/matrix_data/corall.txt";
 		
 		Trans2Point tp = new Trans2Point();
-//		tp.dotrans(nameaddr, inaddr, outaddr);
-		tp.runap(nameaddr, inaddr, outaddr);
+		tp.dotrans(nameaddr, inaddr, outaddr);
+//		tp.runap(nameaddr, inaddr, outaddr);
 
 	}
 
